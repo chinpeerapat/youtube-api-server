@@ -1,8 +1,10 @@
 import json
+import ssl
 from urllib.parse import urlparse, parse_qs, urlencode
 from urllib.request import urlopen
 from typing import Optional, List
 
+import requests
 from fastapi import HTTPException
 from youtube_transcript_api import YouTubeTranscriptApi
 
@@ -41,26 +43,25 @@ class YouTubeTools:
         try:
             params = {"format": "json", "url": f"https://www.youtube.com/watch?v={video_id}"}
             oembed_url = "https://www.youtube.com/oembed"
-            query_string = urlencode(params)
-            full_url = oembed_url + "?" + query_string
-
-            with urlopen(full_url) as response:
-                response_text = response.read()
-                video_data = json.loads(response_text.decode())
-                clean_data = {
-                    "title": video_data.get("title"),
-                    "author_name": video_data.get("author_name"),
-                    "author_url": video_data.get("author_url"),
-                    "type": video_data.get("type"),
-                    "height": video_data.get("height"),
-                    "width": video_data.get("width"),
-                    "version": video_data.get("version"),
-                    "provider_name": video_data.get("provider_name"),
-                    "provider_url": video_data.get("provider_url"),
-                    "thumbnail_url": video_data.get("thumbnail_url"),
-                }
-                return clean_data
-        except Exception as e:
+            
+            response = requests.get(oembed_url, params=params)
+            response.raise_for_status()  # Raises an HTTPError for bad responses
+            video_data = response.json()
+            
+            clean_data = {
+                "title": video_data.get("title"),
+                "author_name": video_data.get("author_name"),
+                "author_url": video_data.get("author_url"),
+                "type": video_data.get("type"),
+                "height": video_data.get("height"),
+                "width": video_data.get("width"),
+                "version": video_data.get("version"),
+                "provider_name": video_data.get("provider_name"),
+                "provider_url": video_data.get("provider_url"),
+                "thumbnail_url": video_data.get("thumbnail_url"),
+            }
+            return clean_data
+        except requests.RequestException as e:
             raise HTTPException(status_code=500, detail=f"Error getting video data: {str(e)}")
 
     @staticmethod
