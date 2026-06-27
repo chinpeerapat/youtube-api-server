@@ -1,9 +1,11 @@
-fastapi>=0.104.1
-uvicorn>=0.24.0
-youtube-transcript-api>=0.6.1
-pydantic>=2.4.2
+fastapi>=0.116.1
+uvicorn>=0.35.0
+youtube-transcript-api>=1.2.1
+pydantic>=2.11.7
 python-dotenv>=1.0.0
-httpx>=0.25.0
+httpx>=0.28.0
+PyJWT>=2.8.0
+gunicorn>=21.2.0
 pytest>=7.4.3
 pytest-asyncio>=0.21.1
 requests>=2.31.0

@@ -9,7 +9,11 @@ services:
     environment:
       - HOST=0.0.0.0
       - PORT=8000
+      - RELOAD=false
       - LOG_LEVEL=INFO
+      - ENABLE_AUTH=false
+      - ENABLE_PROXY=false
+      - WEBSHARE_PROXY_LOCATIONS=de,us
     volumes:
       - ./app:/app/app
     restart: unless-stopped
